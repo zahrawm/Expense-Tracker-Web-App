@@ -6,9 +6,21 @@ const Login: React.FC = () => {
   const [password, setPassword] = React.useState<string>('');
   const [error, setError] = React.useState<string | null>(null);
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-   
+    
+    if (!email) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    if (!password) {
+      setError("Please enter a password");
+      return;
+    }
+    
+    
+    setError(null);
+      
   };
 
   return (
@@ -23,14 +35,28 @@ const Login: React.FC = () => {
           <input 
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mb-4"
           />
           <input 
             type="password"
             placeholder="Password"
-            className="w-full p-2 border border-gray-300 rounded"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded mb-4"
           />
+          
+          {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
+          
+          <button type="submit" className='bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700 transition-colors'>
+            Login
+          </button>
         </form>
+        
+        <p className="mt-4 text-center">
+          Don't have an account? <a href="/signup" className='text-blue-600 hover:underline'>Sign Up</a>
+        </p>
       </div>
     </AuthLayout>
   );
