@@ -6,7 +6,7 @@ interface DatabaseConfig {
 }
 
 const config: DatabaseConfig = {
-  uri: process.env.MONGO_URI || 'mongodb://localhost:27017/mydb',
+  uri: process.env.MONGO_URI || 'mongodb+srv://adamfatima2557:51Kwsp6ZZmHPqyQE@cluster0.0hdmiui.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
   options: {
     maxPoolSize: 10,
     serverSelectionTimeoutMS: 5000,

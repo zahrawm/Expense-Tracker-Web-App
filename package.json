@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "mongodb": "^6.18.0",
+    "multer": "^2.0.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/multer": "^2.0.0",
+    "@types/xlsx": "^0.0.35"
+  }
+}
