@@ -3,14 +3,24 @@ import mongoose from 'mongoose';
 import path from 'path';
 import incomeRoutes from './routers/incomeRoutes';
 import authRoutes from './routers/authRoutes';
+import expenseRoutes from './routers/expenseRoute'
+import dashboardRoutes from './routers/dashboardRoutes';
+import cors, { CorsOptions } from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mydb';
+app.use(cors({
+  origin: "http://localhost:5173", 
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/income", incomeRoutes);
+app.use("/api/expense", expenseRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 mongoose.connect(MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))

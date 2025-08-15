@@ -10,17 +10,19 @@ import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import Expense from './pages/Expense';
 import Home from './pages/Home';
+import UserProvider from './context/UserContext';
 
 
 function App() {
   
 
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route path="/" element={< Root />} />
-          <Route path="/login" element={<Login />} />
+    <UserProvider>
+      <>
+        <Router>
+          <Routes>
+            <Route path="/" element={< Root />} />
+            <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/expense" element={<Expense />} />
@@ -28,6 +30,7 @@ function App() {
         </Routes>
       </Router>
     </>
+    </UserProvider>
   )
 }
 

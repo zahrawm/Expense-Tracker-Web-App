@@ -1,10 +1,14 @@
 import React from 'react';
+import Dashboard from './Dashboard';
+import { DashboardLayout } from '../components/DashoardLayout';
 
 const Home = () => {
   return (
-    <div>
-      <h1>Home Page</h1>
-    </div>
+   <DashboardLayout activeMenu = "DashBoard">
+     <div className="my-5 mx-auto">
+     
+     </div>
+   </DashboardLayout>
   );
 };
 

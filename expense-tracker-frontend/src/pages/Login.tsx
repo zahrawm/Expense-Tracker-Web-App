@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
+import axiosInstance from '../utils/axiosInstance';
+import { API_PATHS } from '../utils/apiPaths';
+import { UserContext } from '../context/UserContext';
 
 const Login: React.FC = () => {
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [error, setError] = React.useState<string | null>(null);
+  const { updateUser } = useContext(UserContext)!;
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,9 +24,22 @@ const Login: React.FC = () => {
       return;
     }
     
-    
     setError(null);
-      
+    
+    try {
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, { email, password });
+      const { token, user } = response.data;
+
+      if (token) {
+        localStorage.setItem('token', token);
+        updateUser(user);
+        navigate('/dashboard');
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        setError(error.response.data.message);
+      }
+    }
   };
 
   return (
