@@ -64,7 +64,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({ activeMenu }) => {
   
   const { user, clearUser } = context;
   
-  // Mock navigate - replace with actual useNavigate() in your project
+  
   const navigate = (route: string) => {
     console.log(`Navigating to: ${route}`);
   };
@@ -79,14 +79,14 @@ export const SideMenu: React.FC<SideMenuProps> = ({ activeMenu }) => {
   };
 
   const handleLogout = () => {
-    // localStorage.clear(); // Uncomment in your actual project
+    
     clearUser();
     navigate("/login");
   };
 
   return (
     <div className="h-full w-64 bg-gradient-to-b from-slate-900 to-slate-800 text-white shadow-2xl flex flex-col">
-      {/* User Profile Section */}
+    
       <div className="p-6 border-b border-slate-700/50">
         <div className="flex items-center space-x-4">
           <div className="relative">
@@ -115,7 +115,6 @@ export const SideMenu: React.FC<SideMenuProps> = ({ activeMenu }) => {
         </div>
       </div>
 
-      {/* Navigation Menu */}
       <nav className="flex-1 p-4 space-y-2">
         {SIDE_MENU_DATA.map((item) => {
           const IconComponent = item.icon;
@@ -159,8 +158,8 @@ export const SideMenu: React.FC<SideMenuProps> = ({ activeMenu }) => {
   );
 };
 
-// Demo wrapper
-const DemoApp = () => {
+
+ export const DemoApp = () => {
   const [activeMenu, setActiveMenu] = React.useState("/dashboard");
   
   const mockContext: UserContextType = {
@@ -204,4 +203,4 @@ const DemoApp = () => {
   );
 };
 
-export default DemoApp;
+export default SideMenu;
