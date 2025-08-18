@@ -51,10 +51,7 @@ const SignUp: React.FC = () => {
       formData.append('fullName', fullName);
       formData.append('email', email);
       formData.append('password', password);
-      if (profileImage) {
-        const imUploadRes = await uploadImage(profileImage);
-        formData.append('profileImage', imUploadRes);
-      }
+    
 
       const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, formData, {
         headers: {

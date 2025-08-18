@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
-
+import { Home, DollarSign, CreditCard, LogOut } from "lucide-react";
+import { CharAvatar } from "./CharAvatar";
 
 interface User {
   fullName?: string;
@@ -23,12 +24,9 @@ interface SideMenuProps {
 }
 
 
-import { Home, DollarSign, CreditCard, LogOut } from "lucide-react";
-
-
 const UserContext = React.createContext<UserContextType | null>(null);
 
-const SIDE_MENU_DATA = [
+const SIDE_MENU_DATA: MenuItem[] = [
   {
     id: "01",
     icon: Home,
@@ -51,7 +49,7 @@ const SIDE_MENU_DATA = [
     id: "04",
     icon: LogOut,
     label: "Logout",
-    path: "logout"
+    path: "/logout" 
   }
 ];
 
@@ -64,13 +62,12 @@ export const SideMenu: React.FC<SideMenuProps> = ({ activeMenu }) => {
   
   const { user, clearUser } = context;
   
-  
   const navigate = (route: string) => {
     console.log(`Navigating to: ${route}`);
   };
 
   const handleClick = (path: string) => {
-    if (path === "logout") {
+    if (path === "/logout") { 
       clearUser();
       navigate("/login");
       return;
@@ -78,30 +75,24 @@ export const SideMenu: React.FC<SideMenuProps> = ({ activeMenu }) => {
     navigate(path);
   };
 
-  const handleLogout = () => {
-    
-    clearUser();
-    navigate("/login");
-  };
-
   return (
     <div className="h-full w-64 bg-gradient-to-b from-slate-900 to-slate-800 text-white shadow-2xl flex flex-col">
-    
+      {/* User Profile Section */}
       <div className="p-6 border-b border-slate-700/50">
         <div className="flex items-center space-x-4">
           <div className="relative">
             {user?.profileImageUrl ? (
               <img 
-                src={user.profileImageUrl || ""} 
+                src={user.profileImageUrl} 
                 alt="Profile" 
                 className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500/30 shadow-lg"
               />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-                <span className="text-xl font-bold text-white">
-                  {user?.fullName?.charAt(0) || "?"}
-                </span>
-              </div>
+              <CharAvatar
+                fullName={user?.fullName || "Guest"}
+                width="w-12"
+                height="h-12"
+              />
             )}
             <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-slate-900 rounded-full"></div>
           </div>
@@ -115,6 +106,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({ activeMenu }) => {
         </div>
       </div>
 
+      {/* Navigation Menu */}
       <nav className="flex-1 p-4 space-y-2">
         {SIDE_MENU_DATA.map((item) => {
           const IconComponent = item.icon;
@@ -158,8 +150,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({ activeMenu }) => {
   );
 };
 
-
- export const DemoApp = () => {
+export const DemoApp: React.FC = () => {
   const [activeMenu, setActiveMenu] = React.useState("/dashboard");
   
   const mockContext: UserContextType = {
