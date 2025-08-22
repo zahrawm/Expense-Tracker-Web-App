@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '../components/DashoardLayout';
 import { InfoCard } from '../components/InfoCard';
@@ -15,6 +15,7 @@ import {
   Calendar,
   BarChart3
 } from 'lucide-react';
+import { UserContext } from '../context/UserContext';
 
 
 interface DashboardData {
@@ -36,11 +37,12 @@ interface Transaction {
 }
 
 const Home: React.FC = () => {
-  useAuthContext();
-  
+
+
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+    const { updateUser } = useContext(UserContext)!;
 
   
   const addThousandSeparator = (amount: number): string => {
@@ -92,7 +94,7 @@ const Home: React.FC = () => {
   return (
     <DashboardLayout activeMenu="Dashboard">
       <div className="space-y-6">
-        {/* Header Section */}
+    
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
@@ -116,7 +118,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Stats Cards */}
+   
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <InfoCard 
             icon={<Wallet className="w-6 h-6" />} 
@@ -151,7 +153,7 @@ const Home: React.FC = () => {
           />
         </div>
 
-        {/* Monthly Overview */}
+       
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center justify-between mb-4">
@@ -185,7 +187,6 @@ const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick Actions */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
             <div className="grid grid-cols-2 gap-4">
@@ -224,7 +225,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Recent Transactions Preview */}
+     
         {dashboardData?.recentTransactions && dashboardData.recentTransactions.length > 0 && (
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex justify-between items-center mb-4">

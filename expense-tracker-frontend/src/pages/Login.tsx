@@ -26,7 +26,12 @@ const Login: React.FC = () => {
     
     setError(null);
     try{
-      const response = await axiosInstance.post(API_PATHS.UPLOAD);
+      const response = await axiosInstance.post(API_PATHS.IMAGE.UPLOAD, {
+    
+      });
+
+    } catch (error) {
+      console.error("Error uploading image:", error);
     }
     
     try {

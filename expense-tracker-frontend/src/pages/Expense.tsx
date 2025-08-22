@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { 
   PlusCircle, 
   TrendingDown, 
@@ -16,9 +16,10 @@ import {
   MoreHorizontal
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../hooks/useContext';
+
 import axiosInstance from '../utils/axiosInstance';
 import { API_PATHS } from '../utils/apiPaths';
+import { UserContext } from '../context/UserContext';
 
 interface Transaction {
   id: string;
@@ -39,11 +40,12 @@ interface CategorySpending {
 
 const Expense: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('This Month');
-  useAuthContext();
+
 
   const navigate = useNavigate();
   const [expenseData, setExpenseData] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+   const { updateUser } = useContext(UserContext)!;
 
   const totalBalance = 2847.32;
   const monthlyIncome = 4200.00;

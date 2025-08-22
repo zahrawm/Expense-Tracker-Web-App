@@ -4,15 +4,15 @@ import AuthLayout from '../components/AuthLayout';
 import axiosInstance from '../utils/axiosInstance';
 import { API_PATHS } from '../utils/apiPaths';
 import { UserContext } from '../context/UserContext';
-import { uploadImage } from '../utils/uploadImage';
 
 const SignUp: React.FC = () => {
-  const [fullName, setFullName] = React.useState<string>('');
+  const [name, setName] = React.useState<string>('');
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [profileImage, setProfileImage] = React.useState<File | null>(null);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const { updateUser } = useContext(UserContext)!;
   const navigate = useNavigate();
 
@@ -31,27 +31,44 @@ const SignUp: React.FC = () => {
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!fullName) {
+    // Enhanced validation
+    if (!name.trim()) {
       setError("Please enter your full name");
       return;
     }
-    if (!email) {
+    if (!email.trim()) {
       setError("Please enter a valid email address");
       return;
     }
-    if (!password) {
+    if (!password.trim()) {
       setError("Please enter a password");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
       return;
     }
     
     setError(null);
+    setIsLoading(true);
     
     try {
       const formData = new FormData();
-      formData.append('fullName', fullName);
-      formData.append('email', email);
+      formData.append('name', name.trim());
+      formData.append('email', email.trim());
       formData.append('password', password);
-    
+      
+      // Only append profile image if one is selected
+      if (profileImage) {
+        formData.append('profileImage', profileImage);
+      }
+
+      // Debug: Log what we're sending
+      console.log('Sending registration data:', {
+        name: name.trim(),
+        email: email.trim(),
+        hasProfileImage: !!profileImage
+      });
 
       const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, formData, {
         headers: {
@@ -59,17 +76,47 @@ const SignUp: React.FC = () => {
         },
       });
       
+      console.log('Registration response:', response.data);
+      
       const { token, user } = response.data;
 
       if (token) {
         localStorage.setItem('token', token);
         updateUser(user);
         navigate('/dashboard');
+      } else {
+        setError('Registration successful but no token received');
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 400) {
-        setError(error.response.data.message);
+      console.error('Registration error:', error);
+      
+      if (error.response) {
+        // Server responded with error status
+        const status = error.response.status;
+        const message = error.response.data?.message || error.response.data?.error || 'Registration failed';
+        
+        switch (status) {
+          case 400:
+            setError(message);
+            break;
+          case 409:
+            setError('Email already exists. Please use a different email.');
+            break;
+          case 500:
+            setError('Server error. Please try again later.');
+            break;
+          default:
+            setError(`Registration failed: ${message}`);
+        }
+      } else if (error.request) {
+        // Request was made but no response received
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        // Something else happened
+        setError('An unexpected error occurred. Please try again.');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -84,10 +131,12 @@ const SignUp: React.FC = () => {
         <form onSubmit={handleSignUp}>
           <input 
             type="text"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
+            placeholder=" Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mb-4"
+            disabled={isLoading}
+            required
           />
           <input 
             type="email"
@@ -95,13 +144,18 @@ const SignUp: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mb-4"
+            disabled={isLoading}
+            required
           />
           <input 
             type="password"
-            placeholder="Password"
+            placeholder="Password (min 6 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded mb-4"
+            disabled={isLoading}
+            minLength={6}
+            required
           />
           
           {imagePreview && (
@@ -115,17 +169,22 @@ const SignUp: React.FC = () => {
             accept="image/*"
             onChange={handleImageChange}
             className="w-full p-2 border border-gray-300 rounded mb-4"
+            disabled={isLoading}
           />
           
           {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
           
-          <button type="submit" className='bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700 transition-colors'>
-            Sign Up
+          <button 
+            type="submit" 
+            className='bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+            disabled={isLoading}
+          >
+            {isLoading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
         
         <p className="mt-4 text-center">
-          Already have an account? <a href="/login" className='text-blue-600 hover:underline'>Login</a>
+          Already have an account? <a href="/login" className='text-blue-600 hover:underline'>Sign In</a>
         </p>
       </div>
     </AuthLayout>
